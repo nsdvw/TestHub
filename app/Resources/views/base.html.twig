@@ -1,13 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}TestHub &mdash; главная страница{% endblock %}</title>
+
+    {% block stylesheets %}
+      {% stylesheets
+        "%kernel.root_dir%/../vendor/twbs/bootstrap/dist/css/bootstrap.min.css"
+        "%kernel.root_dir%/Resources/css/common.css" %}
+        <link rel="stylesheet" href="{{ asset_url }}">
+      {% endstylesheets %}
+    {% endblock stylesheets %}
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+  </head>
+
+  <body>
+
+    <div class="body-wrapper">
+      <header class="header clearfix">
+        <div class="sitename col-md-8 col-sm-12">TestHub</div>
+        {% block auth %}
+          <div class="auth-section col-md-4 col-sm-12">
+            <div class="login-link pull-right">
+              <a href="#">Вход с паролем</a>
+            </div>
+            <div class="register-link pull-right">
+              <a href="#">Регистрация</a>
+            </div>
+          </div>
+        {% endblock auth %}
+      </header>
+      {% block body %}{% endblock body %}
+    </div>
+
+    {% block javascripts %}
+      {% javascripts
+        "%kernel.root_dir%/../vendor/components/jquery/jquery.min.js"
+        "%kernel.root_dir%/../vendor/twbs/bootstrap/dist/js/bootstrap.min.js" %}
+        <script src="{{ asset_url }}"></script>
+      {% endjavascripts %}
+    {% endblock javascripts %}
+  </body>
+
 </html>

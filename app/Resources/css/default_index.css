@@ -1,0 +1,13 @@
+.test-title {
+    margin-bottom: 5px;
+}
+.tag-name {
+    padding-right: 10px;
+    text-decoration: underline;
+}
+.show-all {
+    text-decoration: underline;
+}
+.top-tests {
+    margin-bottom: 16px;
+}
