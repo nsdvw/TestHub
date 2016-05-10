@@ -11,11 +11,11 @@ Written on php using symfony framework.
 
 ## How to install
 
-1. Clone repository
+1. Clone the repository
 ```
 $ git clone https://github.com/nsdvw/TestHub.git destination_folder
 ```
-1. Change permissions for logs, cache and sessions, as it shown in official symfony
+2. Change permissions for logs, cache and sessions, as it shown in official symfony
 documentation
 ```
 $ HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx'\
@@ -23,13 +23,13 @@ $ HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]g
 $ sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var
 $ sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var
 ```
-1. Install dependencies
+3. Install dependencies
 ```
 $ composer install
 ```
-1. Write connection settings in `app/config/parameters.yml`, may use
+4. Write connection settings in `app/config/parameters.yml`, may use
 parameters.yml.dist as a sample
-1. Create database schema via console using doctrine annotations
+5. Create database schema via console using doctrine annotations
 ```
 $ php bin/console doctrine:schema:update --dump-sql --force
 ```
