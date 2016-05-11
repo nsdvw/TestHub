@@ -6,16 +6,16 @@ Written on php using symfony framework.
 ## Requirements
 1. debian based os
 1. php ^5.4
-1. mysql ^5.5
+1. mysql ^5.5 (or any other rdbms supported by doctrine)
 1. webserver apache/nginx with url rewrite tool
 
 ## How to install
 
-1. Clone the repository
+Clone the repository
 ```
 $ git clone https://github.com/nsdvw/TestHub.git destination_folder
 ```
-2. Change permissions for logs, cache and sessions, as it shown in official symfony
+Change permissions for logs, cache and sessions, as it shown in official symfony
 documentation
 ```
 $ HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx'\
@@ -23,13 +23,14 @@ $ HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]g
 $ sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var
 $ sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var
 ```
-3. Install dependencies
+Install dependencies
 ```
 $ composer install
 ```
-4. Write connection settings in `app/config/parameters.yml`, may use
-parameters.yml.dist as a sample
-5. Create database schema via console using doctrine annotations
+Write connection settings in `app/config/parameters.yml`, may use
+parameters.yml.dist as a sample.
+
+Create database schema via migrations tool
 ```
-$ php bin/console doctrine:schema:update --dump-sql --force
+$ php bin/console doctrine:migrations:migrate
 ```
