@@ -73,10 +73,54 @@ class Test
      */
     private $questions;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Attempt", mappedBy="test")
+     */
+    private $attempts;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->questions = new ArrayCollection();
+        $this->attempts = new ArrayCollection();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getQuestions()
+    {
+        return $this->questions;
+    }
+
+    /**
+     * @param ArrayCollection $questions
+     */
+    public function setQuestions($questions)
+    {
+        foreach ($questions as $question) {
+            $this->questions[] = $question;
+        }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAttempts()
+    {
+        return $this->attempts;
+    }
+
+    /**
+     * @param ArrayCollection $attempts
+     */
+    public function setAttempts($attempts)
+    {
+        foreach ($attempts as $attempt) {
+            $this->attempts[] = $attempt;
+        }
     }
 
     /**
@@ -124,6 +168,16 @@ class Test
     }
 
     /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
      * Set title
      *
      * @param string $title
@@ -138,13 +192,13 @@ class Test
     }
 
     /**
-     * Get title
+     * Get description
      *
      * @return string
      */
-    public function getTitle()
+    public function getDescription()
     {
-        return $this->title;
+        return $this->description;
     }
 
     /**
@@ -162,13 +216,13 @@ class Test
     }
 
     /**
-     * Get description
+     * Get timeLimit
      *
-     * @return string
+     * @return int
      */
-    public function getDescription()
+    public function getTimeLimit()
     {
-        return $this->description;
+        return $this->timeLimit;
     }
 
     /**
@@ -186,13 +240,13 @@ class Test
     }
 
     /**
-     * Get timeLimit
+     * Get added
      *
-     * @return int
+     * @return \DateTime
      */
-    public function getTimeLimit()
+    public function getAdded()
     {
-        return $this->timeLimit;
+        return $this->added;
     }
 
     /**
@@ -207,16 +261,6 @@ class Test
         $this->added = $added;
 
         return $this;
-    }
-
-    /**
-     * Get added
-     *
-     * @return \DateTime
-     */
-    public function getAdded()
-    {
-        return $this->added;
     }
 
     /**

@@ -37,6 +37,14 @@ class Attempt
     private $trier;
 
     /**
+     * @var Test
+     *
+     * @ORM\ManyToOne(targetEntity="Test", inversedBy="attempts")
+     * @ORM\JoinColumn(name="test_id", referencedColumnName="id", nullable=false)
+     */
+    private $test;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Answer", mappedBy="attempt")
@@ -46,6 +54,22 @@ class Attempt
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+    }
+
+    /**
+     * @return Test
+     */
+    public function getTest()
+    {
+        return $this->test;
+    }
+
+    /**
+     * @param Test $test
+     */
+    public function setTest($test)
+    {
+        $this->test = $test;
     }
 
     /**
@@ -93,6 +117,16 @@ class Attempt
     }
 
     /**
+     * Get started
+     *
+     * @return \DateTime
+     */
+    public function getStarted()
+    {
+        return $this->started;
+    }
+
+    /**
      * Set started
      *
      * @param \DateTime $started
@@ -104,16 +138,6 @@ class Attempt
         $this->started = $started;
 
         return $this;
-    }
-
-    /**
-     * Get started
-     *
-     * @return \DateTime
-     */
-    public function getStarted()
-    {
-        return $this->started;
     }
 }
 
