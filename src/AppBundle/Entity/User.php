@@ -73,9 +73,33 @@ class User
      */
     private $tests;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Attempt", mappedBy="trier")
+     */
+    private $attempts;
+
     public function __construct()
     {
         $this->tests = new ArrayCollection();
+        $this->attempts = new ArrayCollection();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAttempts()
+    {
+        return $this->attempts;
+    }
+
+    /**
+     * @param ArrayCollection $attempts
+     */
+    public function setAttempts($attempts)
+    {
+        $this->attempts = $attempts;
     }
 
     /**

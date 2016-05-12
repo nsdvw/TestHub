@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,6 +57,60 @@ abstract class Question
      * @ORM\JoinColumn(name="test_id", referencedColumnName="id", nullable=false)
      */
     private $test;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Variant", mappedBy="question")
+     */
+    private $variants;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Answer", mappedBy="question")
+     */
+    private $answers;
+
+    public function __construct()
+    {
+        $this->variants = new ArrayCollection();
+        $this->answers = new ArrayCollection();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
+     * @param ArrayCollection $answers
+     */
+    public function setAnswers($answers)
+    {
+        $this->answers = $answers;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getVariants()
+    {
+        return $this->variants;
+    }
+
+    /**
+     * @param array $variants
+     */
+    public function setVariants($variants)
+    {
+        foreach ($variants as $variant) {
+            $this->variants[] = $variant;
+        }
+    }
 
     /**
      * @return Test
