@@ -10,21 +10,26 @@
 {% block body %}
   <div class="col-md-8 col-xs-12">
     <h1>Последние добавленные тесты</h1>
-    <section class="top-tests">
+    <section class="top-tests list-group row">
       {% for test in tests %}
-        <div class="test-container">
-          <h3 class="test-title">{{ test.getTitle() }}</h3>
-          <div class="test-tags">
-            {% for tag in test.getTags() %}
-              <a href="#" class="tag-name">{{ tag.getName() }}</a>
-            {% endfor %}
+        <div class="test-container list-group-item clearfix">
+          <div class="col-xs-10">
+            <h3 class="test-title">{{ test.getTitle() }}</h3>
+            <div class="test-tags">
+              {% for tag in test.getTags() %}
+                <a href="#" class="tag-name">{{ tag.getName() }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="start-test-btn col-xs-2">
+            <a href="#" class="btn btn-default start-test-link pull-right">&rarr;</a>
           </div>
         </div>
       {% endfor %}
     </section>
     <a href="#" class="lead show-all">Смотреть все тесты &rarr;</a>
   </div>
-  <div class="col-md-4 col-xs-12">
+  <nav class="col-md-4 col-xs-12 nav-about">
     <h2>О сайте</h2>
     <article class="about">
       <p>TestHub &mdash; это сервис, который позволяет Вам легко создавать тесты для
@@ -34,6 +39,6 @@
       тестами.</p>
       <p>Присоединяйтесь к сообществу TestHub!</p>
     </article>
-    <a href="#" class="btn btn-default">Создать тест</a>
-  </div>
+    <a href="#" class="btn btn-success create-test-btn">Создать тест</a>
+  </nav>
 {% endblock body %}

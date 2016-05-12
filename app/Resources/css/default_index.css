@@ -1,5 +1,6 @@
 .test-title {
-    margin-bottom: 5px;
+    margin-bottom: 0;
+    margin-top: 14px;
 }
 .tag-name {
     padding-right: 10px;
@@ -10,4 +11,32 @@
 }
 .top-tests {
     margin-bottom: 16px;
+}
+.test-container {
+    position: relative;
+}
+.test-tags {
+    margin-bottom: 12px;
+}
+.start-test-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+.start-test-link {
+    margin-top: 22px;
+    margin-right: 5px;
+}
+.create-test-btn {
+    margin: 12px 0;
+}
+.nav-about {
+    padding-left: 30px;
+}
+.list-group-item {
+    padding: 0;
+}
+h1 {
+    margin-bottom: 20px;
 }
