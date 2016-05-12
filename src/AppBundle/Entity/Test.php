@@ -66,9 +66,17 @@ class Test
      */
     private $tags;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Question", mappedBy="test")
+     */
+    private $questions;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->questions = new ArrayCollection();
     }
 
     /**
