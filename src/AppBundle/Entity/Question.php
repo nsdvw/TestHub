@@ -20,6 +20,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class Question
 {
+    const TEXT = 'text';
+    const DECIMAL = 'decimal';
+    const SINGLE = 'single';
+    const MULTIPLE = 'multiple';
+
     /**
      * @var int
      *
@@ -76,6 +81,38 @@ abstract class Question
     {
         $this->variants = new ArrayCollection();
         $this->answers = new ArrayCollection();
+    }
+
+    public function getChoices()
+    {
+        if ($this->variants->toArray() === []) {
+            return [];
+        }
+        $variants = $this->getVariants()->toArray();
+        $choices = [];
+        foreach ($variants as $variant) {
+            $choices[$variant->getValue()] = $variant->getId();
+        }
+        return $choices;
+    }
+
+    /**
+     * This method is some sort of crutch to get access to the Question type
+     * from php/view
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        $map = [
+                self::TEXT => "QuestionWithTextAnswer",
+                self::DECIMAL => "QuestionWithDecimalAnswer",
+                self::SINGLE => "QuestionWithSingleCorrectAnswer",
+                self::MULTIPLE => "QuestionWithMultipleCorrectAnswers"
+        ];
+        $spaces = explode("\\", get_class($this));
+        $class = end($spaces);
+        return array_search($class, $map);
     }
 
     /**
