@@ -7,3 +7,9 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    user_manager:
+        class: AppBundle\Service\DummyUserManager
+        arguments: ["@doctrine.orm.entity_manager"]
+    test_service:
+        class: AppBundle\Service\TestService
+        arguments: ["@doctrine.orm.entity_manager"]
