@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Answer
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AnswerRepository")
  * @ORM\Table(name="answer")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
