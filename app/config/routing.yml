@@ -1,3 +1,15 @@
 homepage:
     path: /
     defaults: { _controller: AppBundle:Default:index }
+
+preface:
+    path: /test/{testId}/preface
+    defaults: { _controller: AppBundle:Default:preface }
+
+question:
+    path: /test/{testId}/question
+    defaults: { _controller: AppBundle:Default:question }
+
+result:
+    path: /test/{testId}/result
+    defaults: { _controller: AppBundle:Default:result }
