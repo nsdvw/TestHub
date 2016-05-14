@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,6 +45,36 @@ class Variant
     private $question;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="VariantAnswer", mappedBy="variant")
+     */
+    private $answers;
+
+    public function __construct()
+    {
+        $this->answers = new ArrayCollection();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
+     * @param array $answers
+     */
+    public function setAnswers($answers)
+    {
+        foreach ($answers as $answer) {
+            $this->answers[] = $answer;
+        }
+    }
+
+    /**
      * @return Question
      */
     public function getQuestion()
@@ -73,14 +104,10 @@ class Variant
      * Set value
      *
      * @param string $value
-     *
-     * @return Variant
      */
     public function setValue($value)
     {
         $this->value = $value;
-
-        return $this;
     }
 
     /**
@@ -97,14 +124,10 @@ class Variant
      * Set isRight
      *
      * @param string $isRight
-     *
-     * @return Variant
      */
     public function setIsRight($isRight)
     {
         $this->isRight = $isRight;
-
-        return $this;
     }
 
     /**
