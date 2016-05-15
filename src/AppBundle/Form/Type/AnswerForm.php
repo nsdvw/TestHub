@@ -13,6 +13,16 @@ abstract class AnswerForm extends AbstractType
         $builder
             ->add('question_id', HiddenType::class)
             ->add('attempt_id', HiddenType::class)
-            ->add('submit', SubmitType::class, ['label' => 'Ответить']);
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'Далее',
+                    'attr' =>
+                        [
+                            'class' => 'btn-default pull-right'
+                        ]
+                ]
+            );
     }
 }

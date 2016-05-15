@@ -11,16 +11,24 @@
 
 {% block body %}
   <section class="question-container col-md-8 col-sm-12">
-    <h1>Вопрос:</h1>
-    <article class="question-description">{{ question.getDescription() }}</article>
-    {% if question.getType() is same as('text') %}
-      {% include 'default/text_question.html.twig' %}
-    {% elseif question.getType() is same as('decimal') %}
-      {% include 'default/text_question.html.twig' %}
-    {% elseif question.getType() is same as('single') %}
-      {% include 'default/variant_question.html.twig' %}
-    {% elseif question.getType() is same as('multiple') %}
-      {% include 'default/variant_question.html.twig' %}
-    {% endif %}
+    <h1>{{ question.test.title }}</h1>
+    <div class="panel panel-default">
+      <div class="panel-heading question-number">
+        Вопрос {{ question.sequenceNumber }} из {{ question.test.questions.count }}
+      </div>
+      <div class="panel-body question-description">
+        {{ question.description }}
+        <hr>
+        {% if question.type is same as('text') %}
+          {% include 'default/text_question.html.twig' %}
+        {% elseif question.type is same as('decimal') %}
+          {% include 'default/text_question.html.twig' %}
+        {% elseif question.type is same as('single') %}
+          {% include 'default/variant_question.html.twig' %}
+        {% elseif question.type is same as('multiple') %}
+          {% include 'default/variant_question.html.twig' %}
+        {% endif %}
+      </div>
+    </div>
   </section>
 {% endblock body %}
