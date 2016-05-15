@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Attempt
 {
+    const INFINITE = -1;
+
     /**
      * @var int
      *
@@ -54,6 +56,34 @@ class Attempt
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeLeft()
+    {
+        $now = new \DateTime();
+        $started = $this->started;
+        $limit = $this->getTest()->getTimeLimit();
+        if ($limit === 0) {
+            return self::INFINITE;
+        }
+        $interval = new \DateInterval("PT{$limit}M");
+        $expire = $started->add($interval);
+        $diff = $expire->getTimestamp() - $now->getTimestamp();
+        if ($diff <= 0) {
+            return 0;
+        }
+        return $diff;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->getTimeLeft() !== 0;
     }
 
     /**

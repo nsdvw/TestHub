@@ -16,8 +16,13 @@
       <div class="panel-heading question-number">
         Вопрос {{ question.sequenceNumber }} из {{ question.test.questions.count }}
       </div>
-      <div class="panel-body question-description">
-        {{ question.description }}
+      <div class="panel-body question-description-container">
+        <div class="question-description">{{ question.description }}</div>
+        {% if attempt.timeLeft > 0 %}
+          <div class="time-left text-muted">
+            Осталось времени {{ attempt.timeLeft|formatTimeLeft }}
+          </div>
+        {% endif %}
         <hr>
         {% if question.type is same as('text') %}
           {% include 'default/text_question.html.twig' %}
