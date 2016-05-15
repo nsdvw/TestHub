@@ -29,7 +29,7 @@ class TestService
         $repo = $em->getRepository('AppBundle:Attempt');
         $lastAttempt = $repo->findLastAttempt($test, $user);
         if ($lastAttempt) {
-            if ($this->isAttemptActive($lastAttempt, $test)) {
+            if ($lastAttempt->isActive()) {
                 return $lastAttempt;
             }
         }
@@ -90,23 +90,5 @@ class TestService
         };
         usort($answers, $compare);
         return $answers[0];
-    }
-
-    /**
-     * @param Attempt $attempt
-     * @param Test $test
-     * @return bool
-     */
-    private function isAttemptActive(Attempt $attempt, Test $test)
-    {
-        $now = new \DateTime();
-        $started = $attempt->getStarted();
-        $limit = $test->getTimeLimit();
-        if ($limit === 0) {
-            return true;
-        }
-        $interval = new \DateInterval("PT{$limit}M");
-        $expire = $started->add($interval);
-        return $expire > $now;
     }
 }
