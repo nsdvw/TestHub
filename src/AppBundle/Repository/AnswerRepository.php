@@ -1,6 +1,6 @@
 <?php
-
 namespace AppBundle\Repository;
+
 use AppBundle\Entity\Answer;
 use AppBundle\Entity\Attempt;
 use AppBundle\Entity\DecimalAnswer;
@@ -14,11 +14,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class AnswerRepository extends EntityRepository
 {
-    public function populateAndSave(array $data)
+    public function createAndSave(array $data)
     {
         $em = $this->getEntityManager();
         $question = $em->find('AppBundle:Question', $data['question_id']);
         $attempt = $em->find('AppBundle:Attempt', $data['attempt_id']);
+        if (empty($data['answer'])) {
+            return;
+        }
 
         switch ($question->getType()) {
             case Question::TEXT:

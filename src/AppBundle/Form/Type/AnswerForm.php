@@ -18,11 +18,13 @@ abstract class AnswerForm extends AbstractType
                 SubmitType::class,
                 [
                     'label' => 'Далее',
-                    'attr' =>
-                        [
-                            'class' => 'btn-default pull-right'
-                        ]
+                    'attr' => ['class' => 'btn-default pull-right']
                 ]
             );
+    }
+
+    public function getBlockPrefix()
+    {
+        return 'answer_form';
     }
 }

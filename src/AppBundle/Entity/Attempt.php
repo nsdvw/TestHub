@@ -31,6 +31,13 @@ class Attempt
     private $started;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", options={"default"="active"})
+     */
+    private $status;
+
+    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="attempts")
@@ -59,12 +66,29 @@ class Attempt
     }
 
     /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
      * @return int
      */
     public function getTimeLeft()
     {
         $now = new \DateTime();
-        $started = $this->started;
+        $immutable = new \DateTimeImmutable();
+        $started = $immutable->setTimestamp($this->started->getTimestamp());
         $limit = $this->getTest()->getTimeLimit();
         if ($limit === 0) {
             return self::INFINITE;
@@ -76,14 +100,6 @@ class Attempt
             return 0;
         }
         return $diff;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isActive()
-    {
-        return $this->getTimeLeft() !== 0;
     }
 
     /**

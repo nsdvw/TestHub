@@ -20,7 +20,7 @@
         <div class="question-description">{{ question.description }}</div>
         {% if attempt.timeLeft > 0 %}
           <div class="time-left text-muted">
-            Осталось времени {{ attempt.timeLeft|formatTimeLeft }}
+            Осталось времени: <time>{{ attempt.timeLeft|formatTimeLeft }}</time>
           </div>
         {% endif %}
         <hr>

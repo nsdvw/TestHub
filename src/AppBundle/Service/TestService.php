@@ -1,7 +1,6 @@
 <?php
 namespace AppBundle\Service;
 
-use AppBundle\Entity\Answer;
 use AppBundle\Entity\Attempt;
 use AppBundle\Entity\Question;
 use AppBundle\Entity\Test;
@@ -21,74 +20,135 @@ class TestService
     /**
      * @param Test $test
      * @param User $user
-     * @return Attempt
+     * @return mixed
      */
-    public function continueAttemptOrStartNewOne(Test $test, User $user)
+    public function findLastAttempt(Test $test, User $user)
     {
         $em = $this->em;
         $repo = $em->getRepository('AppBundle:Attempt');
-        $lastAttempt = $repo->findLastAttempt($test, $user);
-        if ($lastAttempt) {
-            if ($lastAttempt->isActive()) {
-                return $lastAttempt;
-            }
-        }
+        return $repo->findLastAttempt($test, $user);
+    }
 
+    /**
+     * @param Test $test
+     * @param User $user
+     * @return Attempt
+     */
+    public function createNewAttempt(Test $test, User $user)
+    {
         $attempt = new Attempt();
         $attempt->setStarted(new \DateTime());
         $attempt->setTrier($user);
         $attempt->setTest($test);
 
-        $repo->save($attempt);
+        $this->em->persist($attempt);
+        $this->em->flush($attempt);
 
         return $attempt;
     }
 
     /**
      * @param Attempt $attempt
-     * @return Question
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function getNextQuestion(Attempt $attempt)
+    public function getUnansweredCount(Attempt $attempt)
     {
-        $lastAnswer = $this->findLastAnswer($attempt);
-        if (!$lastAnswer) {
-            $dql = "SELECT q FROM AppBundle:Question q WHERE q.test = :test_id"
-                    . " ORDER BY q.sequenceNumber ASC";
-            $query = $this->em->createQuery($dql);
-            $query->setParameter('test_id', $attempt->getTest()->getId());
-            $query->setMaxResults(1);
-            return $query->getSingleResult();
-        }
-        $question = $lastAnswer->getQuestion();
-        $dql = "SELECT q FROM AppBundle:Question q"
-                . " WHERE q.test = :test_id AND q.sequenceNumber > :sn"
-                . " ORDER BY q.sequenceNumber ASC";
-        $query = $this->em->createQuery($dql);
-        $query->setParameters([
-            'test_id' => $attempt->getTest()->getId(),
-            'sn' => $question->getSequenceNumber(),
+        $sql = "SELECT COUNT(q.id) FROM question q
+                LEFT JOIN answer a ON a.question_id = q.id
+                WHERE q.test_id = :test_id
+                AND (a.attempt_id <> :attempt_id OR a.id IS NULL)";
+        $conn = $this->em->getConnection();
+        $sth = $conn->prepare($sql);
+        $sth->bindValue('attempt_id', $attempt->getId());
+        $sth->bindValue('test_id', $attempt->getTest()->getId());
+        $sth->execute();
+        return intval($sth->fetchColumn());
+    }
+
+    /**
+     * @param $sequenceNumber
+     * @param $testId
+     * @return null|Question
+     */
+    public function findByNum($sequenceNumber, $testId)
+    {
+        $repo = $this->em->getRepository('AppBundle:Question');
+        return $repo->findOneBy([
+            'test' => $testId,
+            'sequenceNumber' => $sequenceNumber,
         ]);
-        $query->setMaxResults(1);
-        return $query->getOneOrNullResult();
     }
 
     /**
      * @param Attempt $attempt
-     * @return Answer|null
+     * @param Question $question
+     * @return bool
      */
-    private function findLastAnswer(Attempt $attempt)
+    public function questionAlreadyHasAnswer(Attempt $attempt, Question $question)
     {
-        $answers = $attempt->getAnswers()->toArray();
-        if (!$answers) {
+        $dql = "SELECT COUNT(a.id) FROM AppBundle:Answer a
+                JOIN AppBundle:Question q
+                WHERE a.question = :question AND a.attempt = :attempt";
+        $query = $this->em->createQuery($dql);
+        $query->setParameters([
+            'question' => $question,
+            'attempt' => $attempt,
+        ]);
+        $count = $query->getSingleScalarResult();
+        return boolval($count);
+    }
+
+    /**
+     * @param Attempt $attempt
+     * @return null|Question
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function getFirstUnanswered(Attempt $attempt)
+    {
+        $sql = "SELECT q.id FROM question q
+                LEFT JOIN answer a ON a.question_id = q.id
+                WHERE q.test_id = :test_id
+                AND (a.attempt_id <> :attempt_id OR a.id IS NULL)
+                ORDER BY q.sequence_number
+                LIMIT 1";
+        $conn = $this->em->getConnection();
+        $sth = $conn->prepare($sql);
+        $sth->bindValue('attempt_id', $attempt->getId());
+        $sth->bindValue('test_id', $attempt->getTest()->getId());
+        $sth->execute();
+        $id = $sth->fetchColumn();
+
+        if (!$id) {
             return null;
         }
-        $compare = function ($a, $b) {
-            if ($a->getId() === $b->getId()) {
-                return 0;
-            }
-            return ($a->getId() > $b->getId()) ? -1 : 1;
-        };
-        usort($answers, $compare);
-        return $answers[0];
+        return $this->em->find('AppBundle:Question', $id);
+    }
+
+    /**
+     * @param Attempt $attempt
+     * @param $num
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getNextUnansweredNumber(Attempt $attempt, $num)
+    {
+        $sql = "SELECT q.sequence_number FROM question q
+                LEFT JOIN answer a ON a.question_id = q.id
+                WHERE q.test_id = :test_id
+                AND (a.attempt_id <> :attempt_id OR a.id IS NULL)
+                AND (q.sequence_number > :num)
+                ORDER BY q.sequence_number
+                LIMIT 1";
+        $conn = $this->em->getConnection();
+        $sth = $conn->prepare($sql);
+        $sth->bindValue('attempt_id', $attempt->getId());
+        $sth->bindValue('test_id', $attempt->getTest()->getId());
+        $sth->bindValue('num', $num);
+        $sth->execute();
+        return intval($sth->fetchColumn());
     }
 }

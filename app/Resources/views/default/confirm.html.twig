@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% stylesheets "%kernel.root_dir%/Resources/css/default_confirm.css" %}
+    <link rel="stylesheet" href="{{ asset_url }}">
+  {% endstylesheets %}
+{% endblock stylesheets %}
+
+{% block title %}Testhub &mdash; пропущенные вопросы{% endblock title %}
+
+{% block body %}
+  <section class="skipped-container">
+    <h1>Есть пропущенные вопросы</h1>
+    <p class="alert alert-warning">
+      Вы дали ответы не на все вопросы. Вопросов без ответа:
+      <strong>{{ skippedCount }}</strong>
+    </p>
+    <p>Вернуться к пропущенным вопросам, или завершить тест?</p>
+    <p class="remains text-muted">
+      Осталось времени: <time>{{ attempt.timeLeft|formatTimeLeft }}</time>
+    </p>
+    <div class="skipped-buttons">
+      <a href="{{ path('question', {'testId':attempt.test.id}) }}"
+         class="btn btn-success pull-left">Вернуться</a>
+      <a href="{{ path('result', {'attemptID':attempt.id}) }}"
+         class="btn btn-warning pull-right">Завершить</a>
+    </div>
+  </section>
+{% endblock body %}

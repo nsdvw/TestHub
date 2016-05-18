@@ -7,9 +7,15 @@ preface:
     defaults: { _controller: AppBundle:Default:preface }
 
 question:
-    path: /test/{testId}/question
-    defaults: { _controller: AppBundle:Default:question }
+    path: /test/{testId}/question/{num}
+    defaults: { _controller: AppBundle:Default:question, num: 0 }
+    requirements:
+        num: \d+
 
 result:
-    path: /test/{testId}/result
+    path: /result/{attemptID}
     defaults: { _controller: AppBundle:Default:result }
+
+confirm:
+    path: /test/confirm/{attemptID}
+    defaults: { _controller: AppBundle:Default:confirm }
