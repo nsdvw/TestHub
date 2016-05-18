@@ -1,21 +1,21 @@
 homepage:
     path: /
-    defaults: { _controller: AppBundle:Default:index }
+    defaults: { _controller: TestHubBundle:Test:index }
 
 preface:
     path: /test/{testId}/preface
-    defaults: { _controller: AppBundle:Default:preface }
+    defaults: { _controller: TestHubBundle:Test:preface }
 
 question:
     path: /test/{testId}/question/{num}
-    defaults: { _controller: AppBundle:Default:question, num: 0 }
+    defaults: { _controller: TestHubBundle:Test:question, num: 0 }
     requirements:
         num: \d+
 
 result:
     path: /result/{attemptID}
-    defaults: { _controller: AppBundle:Default:result }
+    defaults: { _controller: TestHubBundle:Test:result }
 
 confirm:
     path: /test/confirm/{attemptID}
-    defaults: { _controller: AppBundle:Default:confirm }
+    defaults: { _controller: TestHubBundle:Test:confirm }

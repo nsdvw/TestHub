@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% stylesheets "%kernel.root_dir%/Resources/css/test/index.css" %}
+    <link rel="stylesheet" href="{{ asset_url }}">
+  {% endstylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+  <div class="col-md-8 col-xs-12">
+    <h1>Последние добавленные тесты</h1>
+    <section class="top-tests list-group row">
+      {% for test in tests %}
+        <div class="test-container list-group-item clearfix">
+          <div class="col-xs-10">
+            <h3 class="test-title">{{ test.getTitle() }}</h3>
+            <div class="test-tags">
+              {% for tag in test.getTags() %}
+                <a href="#" class="tag-name">{{ tag.getName() }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="start-test-btn col-xs-2">
+            <a href="#" class="btn btn-default start-test-link pull-right">&rarr;</a>
+          </div>
+        </div>
+      {% endfor %}
+    </section>
+    <a href="#" class="lead show-all">Смотреть все тесты &rarr;</a>
+  </div>
+  <nav class="col-md-4 col-xs-12 nav-about">
+    <h2>О сайте</h2>
+    <article class="about">
+      <p>TestHub &mdash; это сервис, который позволяет Вам легко создавать тесты для
+      проверки знаний и просматривать результаты в удобном интерфейсе.</p>
+      <p>Для создания и прохождения теста не требуется регистрация, но мы советуем
+      зарегистрироваться, так как в этом случае вы легко сможете управлять своими
+      тестами.</p>
+      <p>Присоединяйтесь к сообществу TestHub!</p>
+    </article>
+    <a href="#" class="btn btn-success create-test-btn">Создать тест</a>
+  </nav>
+{% endblock body %}
