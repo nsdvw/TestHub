@@ -35,7 +35,7 @@ class Attempt
      *
      * @ORM\Column(name="status", type="string", options={"default"="active"})
      */
-    private $status;
+    private $status = "active";
 
     /**
      * @var User
