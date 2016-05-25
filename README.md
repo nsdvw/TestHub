@@ -5,8 +5,8 @@ Written on php using symfony framework.
 
 ## Requirements
 1. debian based os
-1. php ^5.4
-1. mysql ^5.5 (or any other rdbms supported by doctrine)
+1. php ^5.5
+1. mysql ^5.5
 1. webserver apache/nginx with url rewrite tool
 
 ## How to install
@@ -30,7 +30,28 @@ $ composer install
 Write connection settings in `app/config/parameters.yml`, may use
 parameters.yml.dist as a sample.
 
+Create database
+```
+$ php bin/console doctrine:database:create
+```
+
 Create database schema via migrations tool
 ```
 $ php bin/console doctrine:migrations:migrate
+```
+
+## Testing
+Create test database (change config in `app/config/config_test.yml` if needed)
+```
+$ php bin/console doctrine:database:create -e test
+```
+
+Create database schema via migrations tool
+```
+$ php bin/console doctrine:migrations:migrate -e test
+```
+
+Run tests
+```
+$ php phpunit.phar
 ```
