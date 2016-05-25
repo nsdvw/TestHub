@@ -14,3 +14,11 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+doctrine:
+    dbal:
+        driver_class: TestHubBundle\DBAL\Driver
+        host:     localhost
+        dbname:   testhub_test
+        user:     root
+        password: null
