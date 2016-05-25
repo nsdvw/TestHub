@@ -52,7 +52,7 @@ class DummyUserManager
     public function createGuestUser()
     {
         $user = new User();
-        $token = StringGenerator::generateToken();
+        $token = StringGenerator::generateString();
         $user->setAccessToken($token);
 
         $em = $this->em;
