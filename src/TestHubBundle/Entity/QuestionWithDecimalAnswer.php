@@ -18,7 +18,7 @@ class QuestionWithDecimalAnswer extends Question
     /**
      * @var int
      *
-     * @ORM\Column(name="precision", type="integer", nullable=true)
+     * @ORM\Column(name="`precision`", type="integer", nullable=true)
      */
     private $precision;
 
