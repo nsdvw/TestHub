@@ -96,7 +96,7 @@ class Test
     }
 
     /**
-     * @param ArrayCollection $questions
+     * @param array $questions
      */
     public function setQuestions($questions)
     {
@@ -261,30 +261,6 @@ class Test
         $this->added = $added;
 
         return $this;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
-     *
-     * @return Test
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
     }
 }
 
