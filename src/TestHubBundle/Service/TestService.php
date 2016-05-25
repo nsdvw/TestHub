@@ -55,9 +55,8 @@ class TestService
     public function getUnansweredCount(Attempt $attempt)
     {
         $sql = "SELECT COUNT(q.id) FROM question q
-                LEFT JOIN answer a ON a.question_id = q.id
-                WHERE q.test_id = :test_id
-                AND (a.attempt_id <> :attempt_id OR a.id IS NULL)";
+                LEFT JOIN answer a ON (a.question_id = q.id AND a.attempt_id = :attempt_id)
+                WHERE q.test_id = :test_id AND a.id IS NULL";
         $conn = $this->em->getConnection();
         $sth = $conn->prepare($sql);
         $sth->bindValue('attempt_id', $attempt->getId());
@@ -110,11 +109,10 @@ class TestService
     public function getFirstUnanswered(Attempt $attempt)
     {
         $sql = "SELECT q.id FROM question q
-                LEFT JOIN answer a ON a.question_id = q.id
-                WHERE q.test_id = :test_id
-                AND (a.attempt_id <> :attempt_id OR a.id IS NULL)
-                ORDER BY q.sequence_number
-                LIMIT 1";
+                LEFT JOIN answer a
+                ON (a.question_id = q.id AND a.attempt_id = :attempt_id)
+                WHERE q.test_id = :test_id AND a.id IS NULL
+                ORDER BY q.sequence_number LIMIT 1";
         $conn = $this->em->getConnection();
         $sth = $conn->prepare($sql);
         $sth->bindValue('attempt_id', $attempt->getId());
@@ -137,12 +135,11 @@ class TestService
     public function getNextUnansweredNumber(Attempt $attempt, $num)
     {
         $sql = "SELECT q.sequence_number FROM question q
-                LEFT JOIN answer a ON a.question_id = q.id
-                WHERE q.test_id = :test_id
-                AND (a.attempt_id <> :attempt_id OR a.id IS NULL)
+                LEFT JOIN answer a
+                ON (a.question_id = q.id AND a.attempt_id = :attempt_id)
+                WHERE q.test_id = :test_id AND a.id IS NULL
                 AND (q.sequence_number > :num)
-                ORDER BY q.sequence_number
-                LIMIT 1";
+                ORDER BY q.sequence_number LIMIT 1";
         $conn = $this->em->getConnection();
         $sth = $conn->prepare($sql);
         $sth->bindValue('attempt_id', $attempt->getId());
