@@ -9,14 +9,24 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter(
                 'formatTimeLeft',
                 [$this, 'formatTimeLeftFilter']
-            )
+            ),
+        ];
+    }
+
+    public function getFunctions()
+    {
+        return [
+            new \Twig_SimpleFunction(
+                'wordCase',
+                [$this, 'wordCase']
+            ),
         ];
     }
 
     /**
      * Filter converts time in seconds to 'd:H:i:s' format string
      *
-     * @param $time
+     * @param integer $time
      * @return string
      */
     public function formatTimeLeftFilter($time)
@@ -32,36 +42,52 @@ class AppExtension extends \Twig_Extension
             }
             return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
         }
-        $dayCase = $this->getDayCase($days);
-        return sprintf("%02d {$dayCase} %02d:%02d:%02d", $days, $hours, $minutes, $seconds);
+        $dayCase = $this->getWordCase($days, ['день', 'дня', 'дней']);
+        return sprintf("%d {$dayCase} %02d:%02d:%02d", $days, $hours, $minutes, $seconds);
     }
 
-    private function getDayCase($count)
+    /**
+     * Concatenates number with correct form of russian word
+     *
+     * @param integer $count
+     * @param array $forms
+     * @return string
+     */
+    public function wordCase($count, $forms)
     {
-        $count = intval(floor($count));
-
-        if ($count === 0) {
-            return 'дней';
-        } elseif ($count === 1) {
-            return 'день';
-        } elseif ($count >= 2 and $count <= 4) {
-            return 'дня';
-        } elseif ($count >= 5 and $count <= 20) {
-            return 'дней';
-        }
-
-        $mod = $count % 10;
-        if ($mod === 1) {
-            return 'день';
-        } elseif ($mod >= 2 and $mod <= 4) {
-            return 'дня';
-        } else {
-            return 'дней';
-        }
+        $questionCase = $this->getWordCase($count, $forms);
+        return sprintf("%d {$questionCase}", $count);
     }
 
     public function getName()
     {
         return 'app_extension';
+    }
+
+    private function getWordCase($count, $cases)
+    {
+        $mod100 = $count % 100;
+
+        if ($mod100 === 0) {
+            return $cases[2];
+        } elseif ($mod100 === 1) {
+            return $cases[0];
+        } elseif ($mod100 >= 2 and $mod100 <= 4) {
+            return $cases[1];
+        } elseif ($mod100 >= 5 and $mod100 <= 20) {
+            return $cases[2];
+        }
+
+        return $this->caseModTen($count, $cases);
+    }
+
+    private function caseModTen($count, $cases)
+    {
+        if ($count % 10 === 1) {
+            return $cases[0];
+        } elseif ($count % 10 >= 2 and $count % 10 <= 4) {
+            return $cases[1];
+        }
+        return $cases[2];
     }
 }
