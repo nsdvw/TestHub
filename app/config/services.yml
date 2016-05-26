@@ -13,6 +13,8 @@ services:
     test_service:
         class: TestHubBundle\Service\TestService
         arguments: ["@doctrine.orm.entity_manager"]
+    calculator:
+        class: TestHubBundle\Service\Calculator
     app.twig_extension:
         class: TestHubBundle\Twig\AppExtension
         public: false

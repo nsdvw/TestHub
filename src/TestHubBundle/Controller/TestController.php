@@ -19,9 +19,25 @@ class TestController extends Controller
         return $this->render('test/index.html.twig', ['tests' => $tests]);
     }
 
-    public function prefaceAction($id)
+    public function prefaceAction($testId)
     {
+        $em = $this->getDoctrine()->getManager();
+        $test = $em->find('TestHubBundle:Test', $testId);
+        if (!$test) {
+            throw $this->createNotFoundException('Теста под таким номером не существует');
+        }
 
+        $questionsCount = $this->get('test_service')->getQuestionsCount($test);
+        $maxMark = $this->get('calculator')->calculateMaxMark($test);
+
+        return $this->render(
+            'test/preface.html.twig',
+            [
+                'test' => $test,
+                'questionsCount' => $questionsCount,
+                'maxMark' => $maxMark,
+            ]
+        );
     }
 
     public function questionAction($testId, $num, Request $request)

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% stylesheets "%kernel.root_dir%/Resources/css/test/preface.css" %}
+    <link rel="stylesheet" href="{{ asset_url }}">
+  {% endstylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+  <div class="col-md-8 col-xs-12">
+    <h1>{{ test.title }}</h1>
+    <section class="test-container">
+      {% if test.description is not null %}
+        <p class="test-description">Краткое описание теста...</p>
+      {% endif %}
+      <p class="test-info">
+        В тесте {{ wordCase(questionsCount, ['вопрос', 'вопроса', 'вопросов']) }},
+        за которые можно набрать до {{ maxMark }} баллов. На весь тест дается
+        {{ wordCase(test.timeLimit, ['минута', 'минуты', 'минут']) }}.
+      </p>
+      <div class="test-author">Автор: <a href="">{{ test.author.name }}</a></div>
+    </section>
+    <div class="button-wrapper">
+      <a href="/test/{{ test.id }}/question"
+         class="btn btn-success btn-lg test-start-button">Начать тест</a>
+    </div>
+  </div>
+{% endblock body %}
