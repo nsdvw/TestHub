@@ -148,4 +148,19 @@ class TestService
         $sth->execute();
         return intval($sth->fetchColumn());
     }
+
+    /**
+     * @param Test $test
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getQuestionsCount(Test $test)
+    {
+        $sql = "SELECT COUNT(q.id) FROM question q WHERE q.test_id = :test_id";
+        $conn = $this->em->getConnection();
+        $sth = $conn->prepare($sql);
+        $sth->bindValue('test_id', $test->getId());
+        $sth->execute();
+        return intval($sth->fetchColumn());
+    }
 }

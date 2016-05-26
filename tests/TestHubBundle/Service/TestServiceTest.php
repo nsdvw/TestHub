@@ -57,4 +57,12 @@ class TestServiceTest extends TestCase
 
         $this->assertEquals(4, $nextNumber);
     }
+
+    public function testGetQuestionsCount()
+    {
+        $test = $this->em->find('TestHubBundle:Test', 1);
+
+        $count = $this->testService->getQuestionsCount($test);
+        $this->assertEquals(4, $count);
+    }
 }
