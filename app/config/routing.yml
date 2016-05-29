@@ -2,20 +2,26 @@ homepage:
     path: /
     defaults: { _controller: TestHubBundle:Test:index }
 
+start:
+    path: /test/{testID}/start
+    defaults: { _controller: TestHubBundle:Test:start }
+    methods: [POST]
+
 preface:
-    path: /test/{testId}/preface
+    path: /test/{testID}/preface
     defaults: { _controller: TestHubBundle:Test:preface }
 
 question:
-    path: /test/{testId}/question/{num}
-    defaults: { _controller: TestHubBundle:Test:question, num: 0 }
+    path: /attempt/{attemptID}/question/{questionNumber}
+    defaults: { _controller: TestHubBundle:Test:question }
     requirements:
-        num: \d+
+        questionNumber: \d+
+        attemptID: \d+
 
 result:
     path: /result/{attemptID}
     defaults: { _controller: TestHubBundle:Test:result }
 
 confirm:
-    path: /test/confirm/{attemptID}
+    path: /attempt/{attemptID}/confirm
     defaults: { _controller: TestHubBundle:Test:confirm }

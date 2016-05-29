@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <p class="alert alert-danger">
+    {% block message %}
+      Произошла ошибка, попробуйте позже.
+    {% endblock message %}
+  </p>
+{% endblock body %}

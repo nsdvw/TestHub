@@ -103,6 +103,17 @@ class Attempt
     }
 
     /**
+     * @return bool
+     */
+    public function isCompleted()
+    {
+        if ($this->getTimeLeft() === 0 or $this->getStatus() === 'completed') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @return Test
      */
     public function getTest()

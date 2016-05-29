@@ -18,6 +18,58 @@ class TestService
     }
 
     /**
+     * @param User $user
+     * @param Test $test
+     * @return bool
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function hasActiveAttempt(User $user, Test $test)
+    {
+        $sql = "SELECT id FROM attempt
+                WHERE user_id = :user_id AND test_id = :test_id AND status = 'active'
+                ORDER BY started LIMIT 1";
+        $sth = $this->em->getConnection()->prepare($sql);
+        $sth->bindValue('user_id', $user->getId());
+        $sth->bindValue('test_id', $test->getId());
+        $sth->execute();
+
+        return boolval($sth->fetchColumn());
+    }
+
+    /**
+     * @param User $user
+     * @param Test $test
+     * @return Attempt
+     */
+    public function findLastActiveAttempt(User $user, Test $test)
+    {
+        $repo = $this->em->getRepository('TestHubBundle:Attempt');
+        return $repo->findLastActive($test, $user);
+    }
+
+    /**
+     * @param Attempt $attempt
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getFirstUnansweredNumber(Attempt $attempt)
+    {
+        $sql = "SELECT q.sequence_number FROM question q
+                LEFT JOIN answer a
+                ON (a.question_id = q.id AND a.attempt_id = :attempt_id)
+                WHERE q.test_id = :test_id AND a.id IS NULL
+                ORDER BY q.sequence_number LIMIT 1";
+        $conn = $this->em->getConnection();
+        $sth = $conn->prepare($sql);
+        $sth->bindValue('attempt_id', $attempt->getId());
+        $sth->bindValue('test_id', $attempt->getTest()->getId());
+        $sth->execute();
+        $num = $sth->fetchColumn();
+
+        return ($num === null) ?: intval($num);
+    }
+
+    /**
      * @param Test $test
      * @param User $user
      * @return mixed
@@ -40,9 +92,6 @@ class TestService
         $attempt->setStarted(new \DateTime());
         $attempt->setTrier($user);
         $attempt->setTest($test);
-
-        $this->em->persist($attempt);
-        $this->em->flush($attempt);
 
         return $attempt;
     }
@@ -146,7 +195,9 @@ class TestService
         $sth->bindValue('test_id', $attempt->getTest()->getId());
         $sth->bindValue('num', $num);
         $sth->execute();
-        return intval($sth->fetchColumn());
+        $num = $sth->fetchColumn();
+
+        return ($num === null) ?: intval($num);
     }
 
     /**

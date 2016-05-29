@@ -1,6 +1,7 @@
 <?php
 namespace TestHubBundle\Service;
 
+use TestHubBundle\Entity\Attempt;
 use TestHubBundle\Entity\User;
 use TestHubBundle\Helper\StringGenerator;
 use Doctrine\ORM\EntityManager;
@@ -27,8 +28,18 @@ class DummyUserManager
     }
 
     /**
+     * @param User $user
+     * @param Attempt $attempt
+     * @return bool
+     */
+    public function hasRights(User $user, Attempt $attempt)
+    {
+        return $user->getId() === $attempt->getTrier()->getId();
+    }
+
+    /**
      * @param Request $request
-     * @return User|null|object
+     * @return User|null
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
@@ -55,11 +66,29 @@ class DummyUserManager
         $token = StringGenerator::generateString();
         $user->setAccessToken($token);
 
-        $em = $this->em;
-        $em->persist($user);
-        $em->flush();
-
         return $user;
+    }
+
+    /**
+     * @param User $user
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function save(User $user)
+    {
+        $sql = "INSERT INTO user (name, salt, hash, email, login, accessToken)
+                VALUES (:name, :salt, :hash, :email, :login, :accessToken)";
+        $statement = $this->em->getConnection()->prepare($sql);
+        $statement->execute([
+            'name' => $user->getName(),
+            'salt' => $user->getSalt(),
+            'hash' => $user->getHash(),
+            'email' => $user->getEmail(),
+            'login' => $user->getLogin(),
+            'accessToken' => $user->getAccessToken(),
+        ]);
+
+        return intval($this->em->getConnection()->lastInsertId());
     }
 
     /**

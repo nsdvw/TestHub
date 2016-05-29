@@ -21,7 +21,8 @@
       Осталось времени: <time>{{ attempt.timeLeft|formatTimeLeft }}</time>
     </p>
     <div class="skipped-buttons">
-      <a href="{{ path('question', {'testId':attempt.test.id}) }}"
+      <a href="{{ path('question',
+          {'attemptID':attempt.id, 'questionNumber':firstSkipped}) }}"
          class="btn btn-success pull-left">Вернуться</a>
       <a href="{{ path('result', {'attemptID':attempt.id}) }}"
          class="btn btn-warning pull-right">Завершить</a>

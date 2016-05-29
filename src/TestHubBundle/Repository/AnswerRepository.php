@@ -14,13 +14,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class AnswerRepository extends EntityRepository
 {
-    public function createAndSave(array $data)
+    public function create(array $data)
     {
         $em = $this->getEntityManager();
         $question = $em->find('TestHubBundle:Question', $data['question_id']);
         $attempt = $em->find('TestHubBundle:Attempt', $data['attempt_id']);
         if (empty($data['answer'])) {
-            return;
+            return [];
         }
 
         switch ($question->getType()) {
@@ -29,43 +29,44 @@ class AnswerRepository extends EntityRepository
                 $a->setTextAnswer($data['answer']);
                 $a->setAttempt($attempt);
                 $a->setQuestion($question);
-                $this->save($a);
-                return;
+                return [$a];
             case Question::DECIMAL:
                 $a = new DecimalAnswer();
                 $a->setDecimalAnswer($data['answer']);
                 $a->setAttempt($attempt);
                 $a->setQuestion($question);
-                $this->save($a);
-                return;
+                return [$a];
             case Question::SINGLE:
             case Question::MULTIPLE:
                 if (is_array($data['answer'])) {
+                    $a = [];
                     foreach ($data['answer'] as $id) {
-                        $this->saveWithVariant($id, $attempt, $question);
+                        $a[] = $this->createWithVariant($id, $attempt, $question);
                     }
-                    return;
+                    return $a;
+                } else {
+                    $a = $this->createWithVariant($data['answer'], $attempt, $question);
+                    return [$a];
                 }
-                $this->saveWithVariant($data['answer'], $attempt, $question);
-                return;
         }
     }
 
-    protected function save(Answer $answer)
+    public function save(Answer $answer)
     {
         $em = $this->getEntityManager();
         $em->persist($answer);
         $em->flush();
     }
 
-    protected function saveWithVariant($variantId, Attempt $attempt, Question $question)
+    protected function createWithVariant($variantId, Attempt $attempt, Question $question)
     {
         $em = $this->getEntityManager();
-        $a = new VariantAnswer();
+        $answer = new VariantAnswer();
         $variant = $em->find('TestHubBundle:Variant', $variantId);
-        $a->setVariant($variant);
-        $a->setAttempt($attempt);
-        $a->setQuestion($question);
-        $this->save($a);
+        $answer->setVariant($variant);
+        $answer->setAttempt($attempt);
+        $answer->setQuestion($question);
+
+        return $answer;
     }
 }

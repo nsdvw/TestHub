@@ -9,21 +9,25 @@
 
 {% block body %}
   <div class="col-md-8 col-xs-12">
-    <h1>{{ test.title }}</h1>
-    <section class="test-container">
-      {% if test.description is not null %}
-        <p class="test-description">Краткое описание теста...</p>
-      {% endif %}
-      <p class="test-info">
-        В тесте {{ wordCase(questionsCount, ['вопрос', 'вопроса', 'вопросов']) }},
-        за которые можно набрать до {{ maxMark }} баллов. На весь тест дается
-        {{ wordCase(test.timeLimit, ['минута', 'минуты', 'минут']) }}.
-      </p>
-      <div class="test-author">Автор: <a href="">{{ test.author.name }}</a></div>
-    </section>
-    <div class="button-wrapper">
-      <a href="/test/{{ test.id }}/question"
-         class="btn btn-success btn-lg test-start-button">Начать тест</a>
-    </div>
+    {% block preface %}
+      <h1>{{ test.title }}</h1>
+      <section class="test-container">
+        {% if test.description is not null %}
+          <p class="test-description">Краткое описание теста...</p>
+        {% endif %}
+        <p class="test-info">
+          В тесте {{ wordCase(questionsCount, ['вопрос', 'вопроса', 'вопросов']) }},
+          за которые можно набрать до {{ maxMark }} баллов. На весь тест дается
+          {{ wordCase(test.timeLimit, ['минута', 'минуты', 'минут']) }}.
+        </p>
+        <div class="test-author">Автор: <a href="">{{ test.author.name }}</a></div>
+      </section>
+      <div class="button-wrapper">
+        <form name="formStart" action="/app_dev.php/test/{{ test.id }}/start" method="POST">
+          <input type="submit" value="Начать тест"
+                 class="btn btn-success btn-lg test-start-button">
+        </form>
+      </div>
+    {% endblock preface %}
   </div>
 {% endblock body %}
