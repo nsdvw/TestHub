@@ -2,6 +2,7 @@
 namespace TestHubBundle\Controller;
 
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use TestHubBundle\Entity\Attempt;
 use TestHubBundle\Entity\Question;
 use TestHubBundle\Form\Type\TextAnswerForm;
 use TestHubBundle\Form\Type\VariantAnswerForm;
@@ -149,10 +150,37 @@ class TestController extends Controller
         ]);
     }
 
-    public function resultAction($attemptID)
+    public function resultAction($attemptID, Request $request)
     {
-        return new Response(
-            "Тест пройден. В дальнейшем здесь можно будет посмотреть его статистику."
+        $em = $this->getDoctrine()->getManager();
+        $attempt = $em->find('TestHubBundle:Attempt', $attemptID);
+
+        if (!$attempt) {
+            throw $this->createNotFoundException();
+        }
+
+        $user = $this->get('user_manager')->getUser($request);
+        if ($user == $attempt->getTrier()) {
+            $attempt->setStatus(Attempt::COMPLETED);
+            $em->persist($attempt);
+        }
+
+        $mark = $this->get('calculator')->calculateMark($attempt);
+        $maxMark = $this->get('calculator')->calculateMaxMark($attempt->getTest());
+        $questionsCount =
+            $this->get('testService')->getQuestionsCount($attempt->getTest());
+        $correctAnswers = $this->get('calculator')->countCorrectAnswers($attempt);
+
+        $em->flush();
+
+        return $this->render(
+            'test/result.html.twig',
+            [
+                'mark' => $mark,
+                'maxMark' => $maxMark,
+                'qCount' => $questionsCount,
+                'correct' => $correctAnswers
+            ]
         );
     }
 

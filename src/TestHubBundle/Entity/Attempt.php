@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Attempt
 {
     const INFINITE = -1;
+    const COMPLETED = 'completed';
+    const ACTIVE = 'active';
 
     /**
      * @var int

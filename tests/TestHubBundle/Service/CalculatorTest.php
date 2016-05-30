@@ -2,22 +2,29 @@
 namespace Tests\TestHubBundle\Service;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use TestHubBundle\Service\Calculator;
+use Tests\TestHubBundle\TestCase;
 
-class CalculatorTest extends WebTestCase
+class CalculatorTest extends TestCase
 {
     protected $em;
 
     protected function setUp()
     {
-        $client = static::createClient();
+        parent::setUp();
 
-        $app = new Application($client->getKernel());
-        $app->setAutoExit(false);
+        $container = self::getApplication()->getKernel()->getContainer();
+        $this->em = $container->get('doctrine')->getManager();
+    }
 
-        $this->em =
-            $app->getKernel()->getContainer()->get('doctrine')->getManager();
+    public function testCountCorrectAnswers()
+    {
+        $attempt = $this->em->find('TestHubBundle:Attempt', 1);
+
+        $calculator = new Calculator();
+        $correctAnswersCount = $calculator->countCorrectAnswers($attempt);
+        $this->assertInternalType('integer', $correctAnswersCount);
+        $this->assertEquals(2, $correctAnswersCount);
     }
 
     public function testCalculateMark()

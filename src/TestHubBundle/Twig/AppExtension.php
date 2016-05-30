@@ -20,6 +20,10 @@ class AppExtension extends \Twig_Extension
                 'wordCase',
                 [$this, 'wordCase']
             ),
+            new \Twig_SimpleFunction(
+                'percentage',
+                [$this, 'percentage']
+            ),
         ];
     }
 
@@ -57,6 +61,16 @@ class AppExtension extends \Twig_Extension
     {
         $questionCase = $this->getWordCase($count, $forms);
         return sprintf("%d {$questionCase}", $count);
+    }
+
+    /**
+     * @param $firstNum
+     * @param $secondNum
+     * @return string
+     */
+    public function percentage($firstNum, $secondNum)
+    {
+        return intval(floor(100 * $firstNum / $secondNum)) . '%';
     }
 
     public function getName()

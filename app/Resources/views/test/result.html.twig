@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Testhub &mdash; результат теста{% endblock title %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% stylesheets "%kernel.root_dir%/Resources/css/test/result.css" %}
+    <link rel="stylesheet" href="{{ asset_url }}">
+  {% endstylesheets %}
+{% endblock stylesheets %}
+
+{% block body %}
+  <div class="col-md-8 col-xs-12">
+    <section class="test-result-section">
+      <h1>Тест завершен</h1>
+      <p>Набрано баллов: <span>{{ mark }}</span>
+        из максимальных  <span>{{ maxMark }}</span>
+        <span>({{ percentage(mark, maxMark) }})</span>
+      </p>
+      <p>Правильных ответов: <span>{{ correct }}</span>
+        на <span>{{ wordCase(qCount, ['вопрос', 'вопроса', 'вопросов']) }}</span>
+        <span>({{ percentage(correct, qCount) }})</span>
+      </p>
+    </section>
+  </div>
+{% endblock body %}

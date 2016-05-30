@@ -7,19 +7,21 @@ use TestHubBundle\Entity\Test;
 
 class Calculator
 {
+    const POINTS = 1;
+    const COUNT = 2;
+
+    public function countCorrectAnswers(Attempt $attempt)
+    {
+        $count = 0;
+        $count += $this->iterate($attempt, self::COUNT);
+
+        return $count;
+    }
+
     public function calculateMark(Attempt $attempt)
     {
         $mark = 0;
-        $questions = $attempt->getTest()->getQuestions();
-        $userAnswers = $attempt->getAnswers();
-
-        foreach ($questions as $question) {
-            $answers = $this->getUserAnswersOnQuestion($userAnswers, $question);
-            if (empty($answers)) {
-                continue;
-            }
-            $mark += $this->accruePoints($question, $answers);
-        }
+        $mark += $this->iterate($attempt, self::POINTS);
 
         return $mark;
     }
@@ -33,6 +35,29 @@ class Calculator
         }
 
         return $maxMark;
+    }
+
+    private function iterate(Attempt $attempt, $type = self::POINTS)
+    {
+        $result = 0;
+        $questions = $attempt->getTest()->getQuestions();
+        $userAnswers = $attempt->getAnswers();
+
+        foreach ($questions as $question) {
+            $answers = $this->getUserAnswersOnQuestion($userAnswers, $question);
+            if (empty($answers)) {
+                continue;
+            }
+            if ($type === self::POINTS) {
+                $result += $this->accruePoints($question, $answers);
+            } else {
+                if ($this->accruePoints($question, $answers)) {
+                    $result++;
+                }
+            }
+        }
+
+        return $result;
     }
 
     private function getUserAnswersOnQuestion($userAnswers, Question $question)

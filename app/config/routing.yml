@@ -19,7 +19,7 @@ question:
         attemptID: \d+
 
 result:
-    path: /result/{attemptID}
+    path: /attempt/{attemptID}/result
     defaults: { _controller: TestHubBundle:Test:result }
 
 confirm:
